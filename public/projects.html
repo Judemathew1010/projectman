@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects Gantt Chart - ProjectMan</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Google Fonts (Outfit) -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Frappe Gantt CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.6.1/frappe-gantt.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Snap.svg (required dependency for Frappe Gantt) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.5.1/snap.svg-min.js"></script>
+  <!-- Frappe Gantt JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.6.1/frappe-gantt.min.js"></script>
+  <!-- Auth Script -->
+  <script src="js/auth.js"></script>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar Container -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content Panel -->
+    <div class="main-content">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+        <div>
+          <h1 class="fw-bold mb-1">Projects Gantt Chart</h1>
+          <p class="text-muted small mb-0">Track and plan project timelines, tasks, and dependencies</p>
+        </div>
+        
+        <div class="d-flex flex-wrap gap-2 align-items-center w-100 w-md-auto">
+          <!-- Project selector -->
+          <div class="d-flex align-items-center gap-2">
+            <span class="text-muted small text-nowrap"><i class="bi bi-briefcase"></i> Project:</span>
+            <select id="project-selector" class="form-select form-control-custom form-select-sm" style="width: 200px;">
+              <option value="">-- Select Project --</option>
+            </select>
+          </div>
+
+          <!-- Add Project Button -->
+          <button id="add-project-btn" class="btn btn-secondary-custom btn-sm px-3" data-bs-toggle="modal" data-bs-target="#addProjectModal">
+            <i class="bi bi-folder-plus"></i> New Project
+          </button>
+          
+          <!-- Delete Project Button -->
+          <button id="delete-project-btn" class="btn btn-danger btn-sm bg-opacity-10 border-danger border-opacity-25 text-danger px-3 d-none">
+            <i class="bi bi-folder-minus"></i> Delete Project
+          </button>
+        </div>
+      </div>
+
+      <!-- Gantt Workspace -->
+      <div id="gantt-workspace" class="d-none">
+        <div class="card glass-panel p-4 text-white mb-4">
+          <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+            <div class="d-flex align-items-center gap-2">
+              <h4 id="active-project-name" class="fw-bold mb-0">Project Name</h4>
+              <span id="active-project-desc" class="text-muted small">Description</span>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+              <!-- View Mode -->
+              <div class="btn-group btn-group-sm" role="group">
+                <button type="button" class="btn btn-secondary-custom gantt-view-btn active" data-mode="Day">Day</button>
+                <button type="button" class="btn btn-secondary-custom gantt-view-btn" data-mode="Week">Week</button>
+                <button type="button" class="btn btn-secondary-custom gantt-view-btn" data-mode="Month">Month</button>
+              </div>
+
+              <!-- Add Task Button (Admin Only) -->
+              <button id="add-task-btn" class="btn btn-primary-custom btn-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                <i class="bi bi-plus-lg"></i> Add Task
+              </button>
+            </div>
+          </div>
+
+          <!-- Gantt chart SVG goes here -->
+          <div class="gantt-container">
+            <svg id="gantt-chart-svg"></svg>
+            <div id="gantt-empty-state" class="text-center py-5 text-muted d-none">
+              <i class="bi bi-card-list fs-2 d-block mb-2"></i>
+              No tasks found in this project. Click "Add Task" to create one.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Select project warning -->
+      <div id="gantt-select-project-state" class="card glass-panel p-5 text-center text-white">
+        <i class="bi bi-diagram-3 fs-1 mb-3 text-cyan"></i>
+        <h4 class="fw-bold">No Active Project</h4>
+        <p class="text-muted max-width-500 mx-auto">Please select a project from the top dropdown, or create a new project to start scheduling timelines and dependencies.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD PROJECT MODAL -->
+  <div class="modal fade" id="addProjectModal" tabindex="-1" aria-labelledby="addProjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-panel text-white border border-secondary border-opacity-25" style="background: rgba(20, 26, 42, 0.95);">
+        <div class="modal-header border-bottom border-secondary border-opacity-25">
+          <h5 class="modal-title fw-bold" id="addProjectModalLabel"><i class="bi bi-folder-plus"></i> Create New Project</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="add-project-form">
+          <div class="modal-body">
+            <div id="project-error-alert" class="alert alert-danger d-none py-2 px-3 small border-0 bg-danger bg-opacity-25 text-danger mb-3"></div>
+
+            <div class="mb-3">
+              <label for="project-name" class="form-label form-label-custom small">Project Name</label>
+              <input type="text" class="form-control form-control-custom" id="project-name" placeholder="e.g. Website Redesign" required autocomplete="off">
+            </div>
+
+            <div class="mb-2">
+              <label for="project-desc" class="form-label form-label-custom small">Description</label>
+              <textarea class="form-control form-control-custom" id="project-desc" rows="3" placeholder="Brief details about the project"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer border-top border-secondary border-opacity-25">
+            <button type="button" class="btn btn-secondary-custom btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary-custom btn-sm px-4 py-2">Create Project</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD TASK MODAL -->
+  <div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-panel text-white border border-secondary border-opacity-25" style="background: rgba(20, 26, 42, 0.95);">
+        <div class="modal-header border-bottom border-secondary border-opacity-25">
+          <h5 class="modal-title fw-bold" id="addTaskModalLabel"><i class="bi bi-plus-lg"></i> Add Project Task</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="add-task-form">
+          <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+            <div id="task-error-alert" class="alert alert-danger d-none py-2 px-3 small border-0 bg-danger bg-opacity-25 text-danger mb-3"></div>
+
+            <div class="mb-3">
+              <label for="task-name" class="form-label form-label-custom small">Task Name</label>
+              <input type="text" class="form-control form-control-custom" id="task-name" placeholder="e.g. Design Wireframes" required autocomplete="off">
+            </div>
+
+            <div class="mb-3">
+              <label for="task-desc" class="form-label form-label-custom small">Description</label>
+              <textarea class="form-control form-control-custom" id="task-desc" rows="3" placeholder="Add task details, goals, or notes"></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label for="task-images" class="form-label form-label-custom small">Attach Images</label>
+              <input type="file" class="form-control form-control-custom" id="task-images" accept="image/*,.jpg,.jpeg,.png,.gif,.webp,.bmp,.svg,.heic,.heif,.avif,.tif,.tiff,.ico" multiple>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label for="task-start" class="form-label form-label-custom small">Start Date</label>
+                <input type="date" class="form-control form-control-custom" id="task-start" required>
+              </div>
+              <div class="col-md-6">
+                <label for="task-end" class="form-label form-label-custom small">End Date</label>
+                <input type="date" class="form-control form-control-custom" id="task-end" required>
+              </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label for="task-assignee" class="form-label form-label-custom small">Assignee</label>
+                <select class="form-select form-control-custom" id="task-assignee">
+                  <option value="">Unassigned</option>
+                  <!-- Populate users dynamically -->
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="task-progress" class="form-label form-label-custom small">Progress (%)</label>
+                <input type="number" class="form-control form-control-custom" id="task-progress" min="0" max="100" value="0">
+              </div>
+            </div>
+
+            <div class="mb-2">
+              <label for="task-dependency" class="form-label form-label-custom small">Dependency (Preceding Task)</label>
+              <select class="form-select form-control-custom" id="task-dependency">
+                <option value="">None</option>
+                <!-- Populate existing tasks dynamically -->
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer border-top border-secondary border-opacity-25">
+            <button type="button" class="btn btn-secondary-custom btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary-custom btn-sm px-4 py-2">Add Task</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT / DELETE TASK MODAL -->
+  <div class="modal fade" id="editTaskModal" tabindex="-1" aria-labelledby="editTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-panel text-white border border-secondary border-opacity-25" style="background: rgba(20, 26, 42, 0.95);">
+        <div class="modal-header border-bottom border-secondary border-opacity-25">
+          <h5 class="modal-title fw-bold" id="editTaskModalLabel"><i class="bi bi-pencil-square"></i> Task Details</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="edit-task-form">
+          <input type="hidden" id="edit-task-id">
+          <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+            <div id="edit-task-error-alert" class="alert alert-danger d-none py-2 px-3 small border-0 bg-danger bg-opacity-25 text-danger mb-3"></div>
+
+            <div class="mb-3">
+              <label for="edit-task-name" class="form-label form-label-custom small">Task Name</label>
+              <input type="text" class="form-control form-control-custom" id="edit-task-name" required autocomplete="off">
+            </div>
+
+            <div class="mb-3">
+              <label for="edit-task-desc" class="form-label form-label-custom small">Description</label>
+              <textarea class="form-control form-control-custom" id="edit-task-desc" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label for="edit-task-images" class="form-label form-label-custom small">Attach New Images</label>
+              <input type="file" class="form-control form-control-custom" id="edit-task-images" accept="image/*,.jpg,.jpeg,.png,.gif,.webp,.bmp,.svg,.heic,.heif,.avif,.tif,.tiff,.ico" multiple>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label form-label-custom small d-block">Attached Images (Click to open)</label>
+              <div id="edit-task-image-gallery" class="ticket-gallery"></div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label for="edit-task-start" class="form-label form-label-custom small">Start Date</label>
+                <input type="date" class="form-control form-control-custom" id="edit-task-start" required>
+              </div>
+              <div class="col-md-6">
+                <label for="edit-task-end" class="form-label form-label-custom small">End Date</label>
+                <input type="date" class="form-control form-control-custom" id="edit-task-end" required>
+              </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label for="edit-task-assignee" class="form-label form-label-custom small">Assignee</label>
+                <select class="form-select form-control-custom" id="edit-task-assignee">
+                  <option value="">Unassigned</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="edit-task-progress" class="form-label form-label-custom small">Progress (%)</label>
+                <input type="number" class="form-control form-control-custom" id="edit-task-progress" min="0" max="100">
+              </div>
+            </div>
+
+            <div class="mb-2">
+              <label for="edit-task-dependency" class="form-label form-label-custom small">Dependency (Preceding Task)</label>
+              <select class="form-select form-control-custom" id="edit-task-dependency">
+                <option value="">None</option>
+              </select>
+            </div>
+
+            <div class="comments-section">
+              <h6 class="fw-bold mb-3"><i class="bi bi-chat-left-text"></i> Thread</h6>
+              <div id="edit-task-comments-list" class="comments-list"></div>
+              <div class="d-flex gap-2">
+                <textarea id="new-task-comment-text" class="form-control form-control-custom form-control-sm" rows="1" placeholder="Write a comment..."></textarea>
+                <button type="button" id="post-task-comment-btn" class="btn btn-primary-custom btn-sm py-1 px-3">Post</button>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer border-top border-secondary border-opacity-25 justify-content-between">
+            <button type="button" id="delete-task-btn" class="btn btn-danger btn-sm bg-opacity-10 border-danger border-opacity-25 text-danger px-3 py-2">
+              <i class="bi bi-trash"></i> Remove Task
+            </button>
+            <div>
+              <button type="button" id="add-subtask-btn" class="btn btn-secondary-custom btn-sm px-3 py-2 me-2">
+                <i class="bi bi-diagram-3"></i> Add Subtask
+              </button>
+              <button type="button" class="btn btn-secondary-custom btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" id="save-task-btn" class="btn btn-primary-custom btn-sm px-4 py-2">Save Changes</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Sidebar Loader Script -->
+  <script src="js/sidebar.js"></script>
+  <!-- Projects Logic Script -->
+  <script src="js/projects.js"></script>
+</body>
+</html>

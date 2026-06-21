@@ -1,0 +1,48 @@
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <i class="bi bi-kanban"></i> ProjectMan
+  </div>
+  
+  <ul class="sidebar-menu">
+    <li>
+      <a href="calendar.html" id="nav-calendar" class="sidebar-link">
+        <i class="bi bi-calendar3"></i> Available Time Slots
+      </a>
+    </li>
+    <li>
+      <a href="projects.html" id="nav-projects" class="sidebar-link">
+        <i class="bi bi-bar-chart-steps"></i> Projects (Gantt)
+      </a>
+    </li>
+    <li>
+      <a href="trello.html" id="nav-trello" class="sidebar-link">
+        <i class="bi bi-layout-three-columns"></i> Task Board (Trello)
+      </a>
+    </li>
+    <li>
+      <a href="notifications.html" id="nav-notifications" class="sidebar-link">
+        <i class="bi bi-bell"></i> Notifications
+      </a>
+    </li>
+    <li id="nav-admin-section" class="d-none">
+      <a href="users.html" id="nav-users" class="sidebar-link">
+        <i class="bi bi-people"></i> User Management
+      </a>
+    </li>
+  </ul>
+  
+  <div class="sidebar-footer">
+    <div class="user-profile-badge">
+      <div class="d-flex align-items-center gap-2">
+        <div class="avatar-sm" id="user-avatar">U</div>
+        <div>
+          <div class="fw-bold text-white small" id="user-display-name">Username</div>
+          <div class="text-muted" style="font-size: 0.7rem;" id="user-display-role">Role</div>
+        </div>
+      </div>
+    </div>
+    <button onclick="logout()" class="btn btn-secondary-custom btn-sm w-100 d-flex align-items-center justify-content-center gap-2 py-2">
+      <i class="bi bi-box-arrow-left"></i> Logout
+    </button>
+  </div>
+</div>

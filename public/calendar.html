@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Availability Scheduler - ProjectMan</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Google Fonts (Outfit) -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Luxon (Timezone Library) -->
+  <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Auth Script -->
+  <script src="js/auth.js"></script>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar Container -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content Panel -->
+    <div class="main-content">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+        <div>
+          <h1 class="fw-bold mb-1">Time Availability Timeline</h1>
+          <p class="text-muted small mb-0">Availability schedule aligned to Indian Standard Time (IST)</p>
+        </div>
+        
+        <div class="d-flex flex-wrap align-items-center gap-3 w-100 w-md-auto">
+          <!-- Timeline Navigation -->
+          <div class="d-flex align-items-center gap-1">
+            <button id="prev-week-btn" class="btn btn-secondary-custom btn-sm py-1.5 px-2.5"><i class="bi bi-chevron-left"></i></button>
+            <span id="week-display-label" class="fw-bold text-white small px-2 text-nowrap" style="min-width: 160px; text-align: center;">Loading Week...</span>
+            <button id="next-week-btn" class="btn btn-secondary-custom btn-sm py-1.5 px-2.5"><i class="bi bi-chevron-right"></i></button>
+            <button id="today-btn" class="btn btn-secondary-custom btn-sm py-1.5 px-3 ms-1">Today</button>
+          </div>
+
+          <div class="btn-group btn-group-sm" role="group" aria-label="Availability range">
+            <button type="button" class="btn btn-secondary-custom availability-view-btn active" data-view="today">Today</button>
+            <button type="button" class="btn btn-secondary-custom availability-view-btn" data-view="week">This Week</button>
+            <button type="button" class="btn btn-secondary-custom availability-view-btn" data-view="month">This Month</button>
+          </div>
+          
+          <span class="badge bg-primary bg-opacity-10 text-cyan border border-info border-opacity-10 px-3 py-2.5 small"><i class="bi bi-clock"></i> IST Display</span>
+          
+          <button class="btn btn-primary-custom btn-sm d-flex align-items-center gap-2 text-nowrap py-2 px-3" onclick="openAddModal()">
+            <i class="bi bi-calendar-plus"></i> Add Slots
+          </button>
+        </div>
+      </div>
+
+      <!-- Timeline Scheduler Container -->
+      <div class="card glass-panel p-4 text-white">
+        <div id="timeline-scheduler" class="table-responsive">
+          <!-- Timeline will be generated dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD / EDIT AVAILABILITY MODAL -->
+  <div class="modal fade" id="addAvailabilityModal" tabindex="-1" aria-labelledby="addAvailabilityModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-panel text-white border border-secondary border-opacity-25" style="background: rgba(20, 26, 42, 0.95);">
+        <div class="modal-header border-bottom border-secondary border-opacity-25">
+          <h5 class="modal-title fw-bold" id="addAvailabilityModalLabel"><i class="bi bi-calendar-plus"></i> Log Time Availability</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="add-availability-form">
+          <input type="hidden" id="slot-id">
+          <div class="modal-body">
+            <div id="modal-error-alert" class="alert alert-danger d-none py-2 px-3 small border-0 bg-danger bg-opacity-25 text-danger mb-3" role="alert">
+              Error message.
+            </div>
+
+            <!-- Username Selection (Conditional for Admin) -->
+            <div class="mb-3">
+              <label for="slot-username" class="form-label form-label-custom small">User</label>
+              <select class="form-select form-control-custom" id="slot-username">
+                <!-- Will be populated dynamically -->
+              </select>
+            </div>
+
+            <!-- User entry Timezone -->
+            <div class="mb-3">
+              <label for="slot-timezone" class="form-label form-label-custom small">Entry Timezone (Inputs will match this)</label>
+              <select class="form-select form-control-custom" id="slot-timezone">
+                <option value="Asia/Kolkata" selected>Indian Standard Time (IST - Asia/Kolkata)</option>
+                <option value="Asia/Kuala_Lumpur">Malaysian Standard Time (MYT - Asia/Kuala_Lumpur)</option>
+                <option value="Asia/Taipei">Taiwan Standard Time (CST - Asia/Taipei)</option>
+                <option value="UTC">Coordinated Universal Time (UTC)</option>
+                <option value="local">Local Browser Time</option>
+              </select>
+            </div>
+
+            <!-- Date range inputs -->
+            <div class="row g-3">
+              <div class="col-md-6 mb-3">
+                <label for="slot-start" class="form-label form-label-custom small">Start Date & Time</label>
+                <input type="datetime-local" class="form-control form-control-custom" id="slot-start" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="slot-end" class="form-label form-label-custom small">End Date & Time</label>
+                <input type="datetime-local" class="form-control form-control-custom" id="slot-end" required>
+              </div>
+            </div>
+
+            <div class="mb-2">
+              <label for="slot-notes" class="form-label form-label-custom small">Notes / Description (Optional)</label>
+              <textarea class="form-control form-control-custom" id="slot-notes" rows="2" placeholder="e.g. Weekly availability"></textarea>
+            </div>
+
+            <div class="mb-2">
+              <label for="slot-repeat-scope" class="form-label form-label-custom small">Apply To</label>
+              <select class="form-select form-control-custom" id="slot-repeat-scope">
+                <option value="single" selected>This slot only</option>
+                <option value="week">Every day this week</option>
+                <option value="month">Every day this month</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer border-top border-secondary border-opacity-25 justify-content-between">
+            <button type="button" id="modal-delete-slot-btn" class="btn btn-danger btn-sm bg-danger bg-opacity-10 border-danger border-opacity-20 text-danger px-3 py-2 d-none">
+              <i class="bi bi-trash"></i> Remove Slot
+            </button>
+            <div>
+              <button type="button" class="btn btn-secondary-custom btn-sm px-3 py-2" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" id="modal-save-btn" class="btn btn-primary-custom btn-sm px-4 py-2">Save Slot</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Sidebar Loader Script -->
+  <script src="js/sidebar.js"></script>
+  <!-- Calendar Logic Script -->
+  <script src="js/calendar.js"></script>
+</body>
+</html>

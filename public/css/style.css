@@ -1,0 +1,646 @@
+/* Base Design System & Colors */
+:root {
+  --bg-dark: #0f111a;
+  --bg-card: rgba(22, 28, 45, 0.6);
+  --bg-sidebar: rgba(13, 17, 28, 0.85);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --text-primary: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent-cyan: #06b6d4;
+  --accent-purple: #a855f7;
+  --accent-blue: #3b82f6;
+  --accent-emerald: #10b981;
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --glow-effect: 0 0 15px rgba(6, 182, 212, 0.4);
+  --font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--glass-shadow);
+  border-radius: 12px;
+}
+
+/* Scrollbar customizations */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-cyan);
+}
+
+/* Layout */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  max-height: 100vh;
+  margin-left: 280px; /* Sidebar width */
+  transition: margin-left 0.3s ease;
+}
+
+/* Login Page Styles */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at 10% 20%, rgb(15, 12, 33) 0%, rgb(9, 9, 12) 90%);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-btn {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+  border: none;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+  box-shadow: var(--glow-effect);
+  transform: translateY(-2px);
+}
+
+/* Sidebar Styles */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  background: var(--bg-sidebar);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid var(--border-color);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+}
+
+.sidebar-logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: linear-gradient(to right, var(--accent-cyan), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.sidebar-link:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-link.active {
+  color: #fff;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(59, 130, 246, 0.2));
+  border-left: 3px solid var(--accent-cyan);
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.user-profile-badge {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+/* Custom styled Bootstrap buttons */
+.btn-primary-custom {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+  border: none;
+  color: white;
+  transition: all 0.2s ease;
+}
+.btn-primary-custom:hover {
+  opacity: 0.95;
+  box-shadow: var(--glow-effect);
+}
+
+.btn-secondary-custom {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  transition: all 0.2s;
+}
+.btn-secondary-custom:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+/* Form Styles */
+.form-control-custom {
+  background: rgba(15, 17, 26, 0.7);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary) !important;
+  border-radius: 8px;
+}
+.form-control-custom:focus {
+  background: rgba(15, 17, 26, 0.9);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.25);
+}
+
+.form-label-custom {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* FullCalendar Overrides for Dark Mode */
+.fc {
+  --fc-border-color: rgba(255, 255, 255, 0.08);
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: rgba(255, 255, 255, 0.02);
+  --fc-today-bg-color: rgba(6, 182, 212, 0.05);
+  background: var(--bg-card);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+.fc-theme-standard td, .fc-theme-standard th {
+  border: 1px solid var(--border-color) !important;
+}
+.fc .fc-toolbar-title {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+.fc .fc-button-primary {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+.fc .fc-button-primary:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+.fc .fc-button-active {
+  background: var(--accent-cyan) !important;
+  border-color: var(--accent-cyan) !important;
+  color: white !important;
+}
+
+/* Frappe Gantt Chart Overrides */
+.gantt-container {
+  background: var(--bg-card);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  overflow-x: auto;
+}
+.gantt .grid-header {
+  fill: #1a1e2e !important;
+  stroke: var(--border-color) !important;
+}
+.gantt .grid-row {
+  fill: transparent !important;
+}
+.gantt .grid-row:nth-child(even) {
+  fill: rgba(255, 255, 255, 0.01) !important;
+}
+.gantt .row-line {
+  stroke: var(--border-color) !important;
+}
+.gantt .tick {
+  stroke: var(--border-color) !important;
+}
+.gantt .bar-wrapper .bar {
+  fill: var(--accent-blue) !important;
+}
+.gantt .bar-wrapper.active .bar {
+  fill: var(--accent-cyan) !important;
+}
+.gantt .bar-progress {
+  fill: var(--accent-cyan) !important;
+}
+.gantt .bar-label {
+  fill: #fff !important;
+  font-weight: 600;
+}
+.gantt .lower-text, .gantt .upper-text {
+  fill: var(--text-muted) !important;
+  font-family: var(--font-family) !important;
+}
+
+/* Kanban / Trello Board Styles */
+.kanban-board-container {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  align-items: flex-start;
+}
+
+.kanban-column {
+  flex: 0 0 320px;
+  width: 320px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  background: rgba(18, 24, 38, 0.8);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.kanban-column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.kanban-column-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.kanban-cards-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.25rem;
+}
+
+.kanban-card {
+  background: #1e2538;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  cursor: grab;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.kanban-card:active {
+  cursor: grabbing;
+}
+
+.kanban-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(6, 182, 212, 0.3);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+}
+
+.kanban-card-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.kanban-card-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.kanban-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+}
+
+.badge-priority-high {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.badge-priority-medium {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.badge-priority-low {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.kanban-card-assignee {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* User avatar placeholder */
+.avatar-sm {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent-purple);
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+/* Custom Timeline Scheduler Styles */
+.scheduler-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.scheduler-table th, .scheduler-table td {
+  border: 1px solid var(--border-color);
+  padding: 0.75rem;
+  vertical-align: top;
+}
+
+.scheduler-table th {
+  background: rgba(15, 23, 42, 0.6);
+  color: var(--text-primary);
+  font-weight: 700;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.scheduler-table td {
+  min-height: 100px;
+  background: rgba(22, 28, 45, 0.2);
+}
+
+.scheduler-row:hover td {
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.scheduler-user-cell {
+  font-weight: 700;
+  background: rgba(15, 23, 42, 0.4) !important;
+  vertical-align: middle !important;
+  min-width: 140px;
+}
+
+.scheduler-slot-block {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(59, 130, 246, 0.2));
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.scheduler-slot-block:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(6, 182, 212, 0.25);
+  border-color: var(--accent-cyan);
+}
+
+/* Kanban Due Date on Card */
+.kanban-card-due {
+  font-size: 0.7rem;
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Kanban Uploaded Images */
+.ticket-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.ticket-image-wrapper {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.ticket-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.ticket-image-remove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: rgba(239, 68, 68, 0.85);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 10px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.kanban-card-images-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+.kanban-card-thumb {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Comments Section */
+.comments-section {
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+  margin-top: 1.25rem;
+}
+
+.comments-list {
+  max-height: 160px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-right: 0.25rem;
+}
+
+.comment-item {
+  background: rgba(15, 17, 26, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.15rem;
+}
+
+.comment-author {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+}
+
+.comment-time {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+.comment-text {
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* Text visibility overrides: keep all UI text white or grey on the dark theme. */
+.text-muted,
+.text-secondary,
+.text-cyan,
+.text-info,
+.text-primary,
+.text-success,
+.text-warning,
+.text-danger,
+.text-danger-emphasis,
+.text-white-50,
+.kanban-card-assignee,
+.kanban-card-desc,
+.kanban-card-due,
+.comment-time,
+.form-label-custom {
+  color: var(--text-muted) !important;
+}
+
+.text-white,
+.btn,
+.badge,
+.alert,
+.modal-title,
+.kanban-column-title,
+.kanban-card-title,
+.comment-author,
+.comment-text,
+.scheduler-table th,
+.fc .fc-toolbar-title,
+.fc .fc-button-primary,
+.gantt .bar-label {
+  color: var(--text-primary) !important;
+}
+
+.badge-priority-high,
+.badge-priority-medium,
+.badge-priority-low {
+  color: var(--text-primary) !important;
+}
+
+.sidebar-logo {
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  -webkit-text-fill-color: var(--text-primary);
+  color: var(--text-primary);
+}
