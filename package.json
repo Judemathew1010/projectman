@@ -4,10 +4,20 @@
   "description": "Project Management Tool with Gantt, Calendar, and Trello",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "next": "^16.3.3",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "26.3.0",
+    "@types/react": "19.2.18",
+    "typescript": "7.0.2"
   }
 }
